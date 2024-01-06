@@ -1,0 +1,5 @@
+PyPDF2 == 2.10.5
+transformers == 4.24.0
+torch == 1.13.1
+torchvision == 0.14.1
+streamlit == 1.23.1

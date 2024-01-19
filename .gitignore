@@ -4,6 +4,9 @@
 # Data
 data/
 
+# notebooks checkpoints
+src/notebooks/checkpoint-*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

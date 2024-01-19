@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 import PyPDF2
 #import pytesseract
 #from PIL import Image
@@ -64,6 +65,32 @@ class PDFParser:
             text_file.write(text)
             self.logger.info(f'Wrote text to file: {text_file_name}')
 
+    def remove_irrelevant_infos(self, text):
+        # Remove web_page address
+        # URLs don't contribute to the semantic meaning of the text
+        text = re.sub(r'www\.\S+\.\w{2,3}', '', text)
+        # Remove email address
+        text = re.sub(r'\S+@\S+\.\w{2,3}', '', text)
+        # Remove phone number
+        text = re.sub(r'\d{3}-\d{3}-\d{4}', '', text)
+        return text
+    
+    def remove_punctation_errors(self, text):
+        # Remove white spaces before punctation
+        # e.g. 'Hello , my name is John' -> 'Hello, my name is John'
+        text = re.sub(r'\s([,.!?])', r'\1', text)
+        # Remove white spaces before and after apostrophe
+        # e.g. 'I ' m' -> 'I'm'
+        text = re.sub(r'\s\'\s', '\'', text)
+        return text
+
+    def text_preprocessing(self, text):
+        # Remove irrelevant infos
+        text = self.remove_irrelevant_infos(text)
+        # Remove punctation errors
+        text = self.remove_punctation_errors(text)
+        return text
+        
 
     def parse_pdfs_from_local_folder(self):
         # Clean text directory
@@ -78,6 +105,8 @@ class PDFParser:
                     text_file_name = file_name.replace('.pdf', '.txt')
                     # Parse PDF file
                     text = self.parse_pdf_file(pdf_file)
+                    # Preprocess text
+                    text = self.text_preprocessing(text)
                     # Save text to directory
                     self.save_text_to_directory(text, text_file_name)
                     

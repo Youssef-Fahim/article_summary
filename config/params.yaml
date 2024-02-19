@@ -1,5 +1,6 @@
 MODEL:
   model_path: "facebook/bart-large-cnn"
   model_input_max_length: 1024
+  model_output_max_length: 128
   gamma: 0.25
   
